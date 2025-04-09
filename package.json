@@ -5,6 +5,7 @@
   "scripts": {
     "test": "vitest run",
     "lint": "eslint",
+    "plato": "plato -r -d report src/",
     "prepare": "husky"
   },
   "keywords": [],
