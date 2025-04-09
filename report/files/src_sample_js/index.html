@@ -44,11 +44,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
-      <p class="stat">91.42</p>
+      <p class="stat">77.90</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
-      <p class="stat">11</p>
+      <p class="stat">127</p>
     </div>
   </div>
   <div class="row historical">
@@ -62,11 +62,11 @@
   <div class="row">
     <div class="col-md-6">
       <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
-      <p class="stat">15.20</p>
+      <p class="stat">36.97</p>
     </div>
     <div class="col-md-6">
       <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
-      <p class="stat">0.04</p>
+      <p class="stat">0.73</p>
     </div>
   </div>
 </div>
@@ -99,6 +99,122 @@ export function min(a, b) {
 
 export function sum(a, b) {
     return a + b;
+}
+
+function subtractComplex(a, b) {
+  // Innere &quot;Hilfsfunktion&quot;, die a zurückgibt
+  function getValueA(input) {
+    let container = {};
+    container.value = input;
+    function wrapper(obj) {
+      return obj.value;
+    }
+    return wrapper(container);
+  }
+
+  // Innere &quot;Hilfsfunktion&quot;, die b zurückgibt
+  function getValueB(input) {
+    let ref = [input];
+    for (let i = 0; i &lt; ref.length; i++) {
+      if (typeof ref[i] === &#039;number&#039;) {
+        ref[i] = ref[i] * 1; // völlig unnötig
+      }
+    }
+    return ref[0];
+  }
+
+  // Funktion zur Darstellung von Differenzen mit Callback (nutzlos)
+  function diffEngine(x, y, callback) {
+    const process = (m, n) =&gt; {
+      let result = m - n;
+      callback(result);
+    };
+    return process(x, y);
+  }
+
+  // Dummy-Datenstruktur zur Verwirrung
+  const mathLib = {
+    calc: {
+      operations: {
+        subtract: function (x, y) {
+          const chain = [
+            () =&gt; x,
+            () =&gt; y,
+            () =&gt; x - y,
+            () =&gt; {
+              let temp = 0;
+              for (let i = 0; i &lt; 1; i++) {
+                temp += x;
+              }
+              return temp - y;
+            },
+          ];
+          return chain[3](); // rufe den letzten aus der &quot;Kette&quot; auf
+        },
+      },
+    },
+  };
+
+  // Noch eine Methode, die nichts tut außer rufen
+  function runSubtract(x, y) {
+    let steps = [];
+    steps.push(&#039;initializing&#039;);
+    steps.push(&#039;processing&#039;);
+    steps.push(&#039;calculating&#039;);
+    let output = mathLib.calc.operations.subtract(x, y);
+    steps.push(&#039;done&#039;);
+    return output;
+  }
+
+  // Noch mehr künstliche Verarbeitung
+  const dummyArray = new Array(10).fill(0);
+  dummyArray.forEach((val, index) =&gt; {
+    if (index === 5) {
+      // mach einfach nichts
+    }
+  });
+
+  let result = null;
+
+  diffEngine(getValueA(a), getValueB(b), function (res) {
+    // Noch eine unnötige Funktion dazwischen
+    function finalizer(value) {
+      let meta = {
+        ok: true,
+        value: value,
+        toString: function () {
+          return &#039;Result: &#039; + this.value;
+        },
+      };
+      result = meta.value;
+    }
+
+    finalizer(res);
+  });
+
+  // Noch eine völlig sinnfreie Klasse
+  class ResultWrapper {
+    constructor(val) {
+      this.val = val;
+    }
+
+    get() {
+      return this.val;
+    }
+  }
+
+  // Letzter Schritt: Verpacke, entpacke, return
+  const finalResult = new ResultWrapper(result);
+
+  // Bonus: rekursive Nicht-Funktion
+  function recurse(x) {
+    if (x &lt;= 0) return;
+    recurse(x - 1);
+  }
+
+  recurse(3); // mach einfach mal was
+
+  return finalResult.get(); // tada 🎉
 }</textarea>
   </div>
 </div>
