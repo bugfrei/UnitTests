@@ -1,0 +1,16 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔍 Generiere Plato Report..."
+npx plato -r -d reports src/
+
+echo "📦 Änderungen hinzufügen (falls nötig)..."
+git add reports/
+
+if ! git diff --cached --quiet; then
+  echo "🔁 Commit wird aktualisiert (amend)..."
+  git commit --amend --no-edit
+else
+  echo "✅ Keine neuen Reports, alles aktuell."
+fi
+
