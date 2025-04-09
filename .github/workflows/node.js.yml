@@ -32,6 +32,8 @@ jobs:
       run: npx plato -r -d report src/
     - name: Commit Plato Report
       run: |
+        git config user.name "bugfrei"
+        git config user.email "cschle@gmail.com"
         git add report/
         git commit --amend -m "Update Plato report [skip ci]" || echo "No changes"
     - name: Push Report
